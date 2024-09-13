@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Blink" ALTER COLUMN "amount" SET DATA TYPE TEXT;

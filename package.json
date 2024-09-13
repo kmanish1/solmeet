@@ -1,0 +1,55 @@
+{
+  "name": "blinks-shopify",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+  },
+  "dependencies": {
+    "@dialectlabs/blinks": "^0.8.0",
+    "@metaplex-foundation/mpl-token-metadata": "^3.2.1",
+    "@metaplex-foundation/umi": "^0.9.2",
+    "@metaplex-foundation/umi-bundle-defaults": "^0.9.2",
+    "@metaplex-foundation/umi-uploader-bundlr": "^0.9.2",
+    "@metaplex-foundation/umi-uploader-irys": "^0.10.0-beta.0",
+    "@prisma/client": "^5.19.0",
+    "@solana/actions": "^1.6.4",
+    "@solana/spl-token": "^0.4.8",
+    "@solana/wallet-adapter-react-ui": "^0.9.35",
+    "@solana/web3.js": "^1.95.3",
+    "@sqds/multisig": "^2.1.1",
+    "@types/bn.js": "^5.1.5",
+    "axios": "^1.7.7",
+    "blinksights-sdk": "^1.0.13",
+    "bn.js": "^5.2.1",
+    "bs58": "^6.0.0",
+    "canvas": "^2.11.2",
+    "cheerio": "^1.0.0",
+    "cloudinary": "^2.4.0",
+    "next": "14.2.5",
+    "prisma": "^5.19.0",
+    "qrcode": "^1.5.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/node": "^20",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  },
+  "resolutions": {
+    "@solana/web3.js": "1.95.3"
+  }
+}
