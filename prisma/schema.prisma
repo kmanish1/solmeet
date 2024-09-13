@@ -7,24 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Vote {
-  id        Int      @id @default(autoincrement())
-  personId  String
-  choice    String
-  createdAt DateTime @default(now())
-}
-
-model Blink {
-  id          String   @id @default(uuid())
-  title       String
-  image       String
-  description String
-  account     String
-  amount      String
-  message     String
-  createdAt   DateTime @default(now())
-}
-
 model SolMeet {
   id          String   @id @default(uuid())
   username    String
