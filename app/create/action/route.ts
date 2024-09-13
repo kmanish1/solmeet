@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       username,
       slug: arr[3],
       meetingId: parseInt(arr[0]),
-      
+      length:parseInt(arr[4]),
       title: arr[1],
       description: arr[2],
       address: account.toBase58(),
