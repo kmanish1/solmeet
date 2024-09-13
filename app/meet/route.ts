@@ -11,7 +11,6 @@ import {
 import { PublicKey } from "@solana/web3.js";
 import axios from "axios";
 import { mockTx } from "./create/fn";
-import next from "next";
 
 const headers = createActionHeaders();
 const prisma = new PrismaClient();

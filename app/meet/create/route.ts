@@ -25,7 +25,7 @@ export function GET() {
         actions: [
           {
             label: "Connect your wallet to receive payments",
-            href: "/api/actions/solmeet/create",
+            href: "/meet/create",
             parameters: [
               {
                 type: "text",
@@ -113,7 +113,7 @@ function NextAction(arr: any, username: string): NextActionLink {
         actions: [
           {
             label: "Submit",
-            href: `/api/actions/solmeet/create/action?username=${username}`,
+            href: `/meet/create/action?username=${username}`,
             parameters: [
               {
                 type: "select",
