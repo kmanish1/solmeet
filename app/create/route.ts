@@ -8,7 +8,7 @@ import {
   NextActionLink,
 } from "@solana/actions";
 import { PublicKey } from "@solana/web3.js";
-import { getEventTypes, mockTx } from "./fn";
+import { getEventTypes, transaction } from "./fn";
 
 const headers = createActionHeaders();
 
@@ -25,7 +25,7 @@ export function GET() {
         actions: [
           {
             label: "Connect your wallet to receive payments",
-            href: "/meet/create",
+            href: "/create",
             parameters: [
               {
                 type: "text",
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
       throw "Invalid account provided";
     }
 
-    const tx = await mockTx(account);
+    const tx = await transaction(account);
 
     // @ts-ignore
     const username = body.data.username;
@@ -113,7 +113,7 @@ function NextAction(arr: any, username: string): NextActionLink {
         actions: [
           {
             label: "Submit",
-            href: `/meet/create/action?username=${username}`,
+            href: `/create/action?username=${username}`,
             parameters: [
               {
                 type: "select",

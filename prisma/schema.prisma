@@ -12,6 +12,7 @@ model SolMeet {
   username    String
   slug        String
   meetingId   Int
+  length      Int
   title       String
   image       String   @db.Text
   description String?

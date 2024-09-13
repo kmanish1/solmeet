@@ -10,9 +10,11 @@ import {
 } from "@solana/actions";
 import { PublicKey } from "@solana/web3.js";
 import axios from "axios";
-import { mockTx } from "./create/fn";
+import { transaction } from "../create/fn";
+import { createSlotObjects } from "./helper";
 
 const headers = createActionHeaders();
+
 const prisma = new PrismaClient();
 
 export const OPTIONS = async () => Response.json(null, { headers });
@@ -20,6 +22,7 @@ export const OPTIONS = async () => Response.json(null, { headers });
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
+
   const data = await prisma.solMeet.findUnique({
     where: {
       id: id!,
@@ -46,8 +49,10 @@ export async function GET(req: Request) {
 
   const res = await axios.get(cal_url);
   let slotData = res.data.result.data.json.slots;
+
   let slotObjects = createSlotObjects(slotData);
   console.log(slotObjects.length);
+
   try {
     const payload: ActionGetResponse = {
       title: `${data!.title}`,
@@ -63,7 +68,7 @@ export async function GET(req: Request) {
           },
           {
             label: "Connect your wallet",
-            href: `/api/actions/solmeet?meetingId=${encodeURIComponent(
+            href: `/meet?meetingId=${encodeURIComponent(
               data!.id
             )}&wallet=${encodeURIComponent(
               data!.address
@@ -87,12 +92,13 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const url = new URL(req.url);
+
     const id = decodeURIComponent(url.searchParams.get("id")!);
     const address = decodeURIComponent(url.searchParams.get("wallet")!);
     const price = decodeURIComponent(url.searchParams.get("price")!);
 
     const body: ActionPostRequest = await req.json();
-
+    console.log(body);
     let account: PublicKey;
     try {
       account = new PublicKey(body.account);
@@ -100,14 +106,14 @@ export async function POST(req: Request) {
       throw "Invalid account provided";
     }
 
-    const tx = await mockTx(account, parseInt(price));
+    const tx = await transaction(account, parseInt(price), address);
 
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction: tx,
         message: `Received the wallet address and in the next step set the price`,
         links: {
-          next: NextAction(),
+          next: NextAction(id),
         },
       },
     });
@@ -130,7 +136,7 @@ export async function POST(req: Request) {
   }
 }
 
-function NextAction(): NextActionLink {
+function NextAction(id: string): NextActionLink {
   return {
     type: "inline",
     action: {
@@ -144,7 +150,7 @@ function NextAction(): NextActionLink {
         actions: [
           {
             label: "Submit",
-            href: `/api/actions/solmeet/action`,
+            href: `/api/actions/action?id`,
             parameters: [
               {
                 type: "text",
@@ -174,56 +180,3 @@ function NextAction(): NextActionLink {
     },
   };
 }
-
-async function getCokkie(username: string) {
-  const res = await axios.get("https://cal.com/api/auth/session", {
-    headers: {
-      Referer: `https://cal.com/${username}`,
-    },
-  });
-  // @ts-ignore
-  return res.headers.get("set-cookie");
-}
-
-interface Slot {
-  time: string;
-}
-
-interface SlotData {
-  [date: string]: Slot[];
-}
-
-interface Option {
-  label: string;
-  value: string;
-}
-
-interface ActionParameterSelectable<Type extends string> {
-  type: Type; // Type is constrained to specific values like "select"
-  label: string;
-  options: Option[];
-  name: string;
-}
-
-// Define the specific type for 'select'
-type SelectActionParameter = ActionParameterSelectable<"select">;
-
-const createSlotObjects = (slots: SlotData): SelectActionParameter[] => {
-  return Object.entries(slots).reduce<SelectActionParameter[]>(
-    (acc, [date, times]) => {
-      if (times.length > 0) {
-        acc.push({
-          type: "select",
-          label: `Select a slot for ${date}`,
-          options: times.map((slot) => ({
-            label: new Date(slot.time).toLocaleTimeString(),
-            value: slot.time,
-          })),
-          name: date,
-        });
-      }
-      return acc;
-    },
-    []
-  );
-};

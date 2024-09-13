@@ -9,7 +9,7 @@ import {
 import { PublicKey } from "@solana/web3.js";
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { mockTx } from "../fn";
+import { transaction } from "../fn";
 import QRCode from "qrcode";
 const headers = createActionHeaders();
 
@@ -45,6 +45,7 @@ export async function POST(req: Request) {
       username,
       slug: arr[3],
       meetingId: parseInt(arr[0]),
+      
       title: arr[1],
       description: arr[2],
       address: account.toBase58(),
@@ -53,7 +54,7 @@ export async function POST(req: Request) {
     },
   });
 
-  const tx = await mockTx(account);
+  const tx = await transaction(account);
   const url = `https://solmeet.click/meet/?${id.id}`;
   const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
     url

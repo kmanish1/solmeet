@@ -10,16 +10,24 @@ import {
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-export async function mockTx(account: PublicKey, amount?: number) {
+export async function transaction(
+  account: PublicKey,
+  amount?: number,
+  address?: string
+) {
   try {
     const connection = new Connection(clusterApiUrl("devnet"));
 
     const { blockhash, lastValidBlockHeight } =
       await connection.getLatestBlockhash();
 
+    let to = address
+      ? new PublicKey(address)
+      : new PublicKey("EXBdeRCdiNChKyD7akt64n9HgSXEpUtpPEhmbnm4L6iH");
+
     const instruction = SystemProgram.transfer({
       fromPubkey: account,
-      toPubkey: new PublicKey("EXBdeRCdiNChKyD7akt64n9HgSXEpUtpPEhmbnm4L6iH"),
+      toPubkey: to,
       lamports: amount ? amount * LAMPORTS_PER_SOL : 0,
     });
 
@@ -58,7 +66,7 @@ export async function getEventTypes(username: string) {
     //@ts-ignore
     const arr = eventTypes!.map((d) => ({
       label: d.title,
-      value: `${d.id},${d.title},${d.description},${d.slug}`,
+      value: `${d.id},${d.title},${d.description},${d.slug},${d.length}`,
     }));
     return arr;
   } catch (error) {
