@@ -67,9 +67,14 @@ export async function POST(req: Request) {
 
     await axios.post("https://cal.com/api/book/event", postBody);
 
-    const tx = await transaction(
-      new PublicKey("DRgXaLJjRej9mQsae8iYpswHzRwdDFchFJns2WNPTwbs")
-    );
+    let account: PublicKey;
+    try {
+      account = new PublicKey(body.account);
+    } catch (err) {
+      throw "Invalid account provided";
+    }
+
+    const tx = await transaction(account);
 
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
