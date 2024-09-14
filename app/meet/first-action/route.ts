@@ -22,20 +22,14 @@ export const GET = async (req: Request) => {
 
 export const OPTIONS = async () => Response.json(null, { headers });
 
-const prisma = new PrismaClient();
 export async function POST(req: Request) {
   try {
     const url = new URL(req.url);
     const id = url.searchParams.get("id")!;
     const slot = url.searchParams.get("slot")!;
+    const price = url.searchParams.get("price")!;
 
     const body: NextActionPostRequest = await req.json();
-
-    const data = await prisma.solMeet.findUnique({
-      where: {
-        id: id,
-      },
-    });
 
     let signature: string;
     try {

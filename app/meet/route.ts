@@ -68,7 +68,7 @@ export async function GET(req: Request) {
           },
           {
             label: `Pay ${data!.price}$ and book slot`,
-            href: `/meet?meetingId=${encodeURIComponent(
+            href: `/meet?id=${encodeURIComponent(
               data!.id
             )}&wallet=${encodeURIComponent(
               data!.address
@@ -122,7 +122,7 @@ export async function POST(req: Request) {
         links: {
           // next: NextAction(id, slot, req),
           next: {
-            href: `/meet/first-action?id=${id}&slot=${slot}`,
+            href: `/meet/first-action?id=${id}&slot=${slot}&price=${price}`,
             type: "post",
           },
         },
