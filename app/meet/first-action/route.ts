@@ -60,9 +60,11 @@ export async function POST(req: Request) {
         signature,
         "confirmed"
       );
-      if (transaction!.meta?.err) {
-        throw "Transaction failed";
-      }
+
+      console.log(transaction);
+      // if (transaction!.meta?.err) {
+      //   throw "Transaction failed";
+      // }
 
       // const paid =
       //   transaction?.meta?.postTokenBalances?.[0].uiTokenAmount -
