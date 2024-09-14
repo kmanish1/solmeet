@@ -55,8 +55,8 @@ export async function GET(req: Request) {
 
   try {
     const payload: ActionGetResponse = {
-      title: `${data!.title}`,
-      description: `${data!.description}. All times are in UTC`,
+      title: `${data!.title}. (UTC Timezone)`,
+      description: `${data!.description}`,
       label: "Pay and Enter the details",
       icon: `${data!.image}`,
       type: "action",

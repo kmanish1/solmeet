@@ -56,8 +56,11 @@ export async function POST(req: Request) {
 
   const tx = await transaction(account);
   const url = `https://solmeet.click/meet?id=${id.id}`;
-  const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+  const blink_url = ` https://dial.to/?action=solana-action:${encodeURIComponent(
     url
+  )}`;
+  const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    blink_url
   )}`;
 
   const qrCodeDataUrl = await QRCode.toDataURL(twitterIntentUrl);
@@ -71,7 +74,7 @@ export async function POST(req: Request) {
           action: {
             type: "completed",
             title: "completed the txn",
-            description: `Scan the QR Code to directly post on X. Here is your url https://solmeet.click/meet?id=${id.id} `,
+            description: `Scan the QR Code to directly post on X. Here is your url ${blink_url}`,
             icon: qrCodeDataUrl,
             label: "completed",
           },

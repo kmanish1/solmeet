@@ -25,10 +25,9 @@ const prisma = new PrismaClient();
 interface MyActionData {
   name: string;
   email: string;
-  notes: string;
-  guest: string;
+  notes?: string;
+  guest?: string;
 }
-
 export async function POST(req: Request) {
   try {
     const url = new URL(req.url);
@@ -42,10 +41,11 @@ export async function POST(req: Request) {
     });
 
     const body: NextActionPostRequest = await req.json();
-    console.log(body);
 
     const actionData = body.data as unknown as MyActionData;
-    const guest = validateEmails(actionData.guest);
+    const guest = actionData.guest ? validateEmails(actionData.guest) : [];
+    const notes = actionData.notes ? actionData.notes : "";
+
     const endTime = addSlotLength(slot!, data?.length!);
 
     const postBody = {
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
         name: actionData.name,
         email: actionData.email,
         guests: guest,
-        notes: actionData.notes,
+        notes: notes,
       },
       user: data!.username,
       start: slot,
