@@ -34,7 +34,9 @@ export async function POST(req: Request) {
       throw 'Invalid "signature" provided';
     }
 
-    const connection = new Connection(clusterApiUrl("devnet"));
+    const connection = new Connection(clusterApiUrl("mainnet-beta"), {
+      commitment: "confirmed",
+    });
 
     try {
       let status = await connection.getSignatureStatus(signature);
