@@ -10,8 +10,8 @@ import {
 } from "@solana/actions";
 import { PublicKey } from "@solana/web3.js";
 import axios from "axios";
-import { transaction } from "../create/fn";
-import { createSlotObjects } from "./helper";
+import { transferUSDC } from "../create/fn";
+import { createSlotObjects, validateActionData } from "./helper";
 
 const headers = createActionHeaders();
 
@@ -30,15 +30,15 @@ export async function GET(req: Request) {
   });
 
   const today = new Date();
-  const oneYearFromNow = new Date();
-  oneYearFromNow.setFullYear(today.getFullYear() + 1);
+  const twoMonthsFromNow = new Date();
+  twoMonthsFromNow.setMonth(today.getMonth() + 2);
 
   let slotdata = {
     json: {
       usernameList: [`${data!.username}`],
       eventTypeSlug: data?.slug,
       startTime: today.toISOString(),
-      endTime: oneYearFromNow.toISOString(),
+      endTime: twoMonthsFromNow.toISOString(),
       timeZone: "Asia/Calcutta",
     },
   };
@@ -67,7 +67,7 @@ export async function GET(req: Request) {
             href: "/api/actions/solmeet/create",
           },
           {
-            label: `Pay ${data!.price}$ and book slot`,
+            label: "Pay ${data!.price}$ and book slot",
             href: `/meet?meetingId=${encodeURIComponent(
               data!.id
             )}&wallet=${encodeURIComponent(
@@ -98,7 +98,10 @@ export async function POST(req: Request) {
     const price = decodeURIComponent(url.searchParams.get("price")!);
 
     const body: ActionPostRequest = await req.json();
-    console.log(body);
+
+    // @ts-ignore
+    const slot = validateActionData(body);
+
     let account: PublicKey;
     try {
       account = new PublicKey(body.account);
@@ -106,14 +109,22 @@ export async function POST(req: Request) {
       throw "Invalid account provided";
     }
 
-    const tx = await transaction(account, parseInt(price), address);
+    const tx = await transferUSDC(
+      account,
+      parseInt(price),
+      new PublicKey(address)
+    );
 
     const payload: ActionPostResponse = await createPostResponse({
       fields: {
         transaction: tx,
-        message: `Received the wallet address and in the next step set the price`,
+        message: `Transaction sent successfully enter the details now`,
         links: {
-          next: NextAction(id),
+          // next: NextAction(id, slot, req),
+          next: {
+            href: `/meet/first-action?id=${id}&slot=${slot}`,
+            type: "post",
+          },
         },
       },
     });
@@ -136,7 +147,7 @@ export async function POST(req: Request) {
   }
 }
 
-function NextAction(id: string): NextActionLink {
+function NextAction(id: string, slot: string, req: Request): NextActionLink {
   return {
     type: "inline",
     action: {
@@ -150,12 +161,12 @@ function NextAction(id: string): NextActionLink {
         actions: [
           {
             label: "Submit",
-            href: `/api/actions/action?id`,
+            href: `/meet/action?id=${id}&slot=${slot}`,
             parameters: [
               {
                 type: "text",
                 label: "Enter your name",
-                name: "number",
+                name: "name",
               },
               {
                 type: "email",
