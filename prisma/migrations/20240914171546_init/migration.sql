@@ -4,6 +4,7 @@ CREATE TABLE "SolMeet" (
     "username" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "meetingId" INTEGER NOT NULL,
+    "length" INTEGER NOT NULL,
     "title" TEXT NOT NULL,
     "image" TEXT NOT NULL,
     "description" TEXT,
