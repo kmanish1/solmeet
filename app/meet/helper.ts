@@ -18,7 +18,6 @@ interface ActionParameterSelectable<Type extends string> {
   name: string;
 }
 
-// Define the specific type for 'select'
 type SelectActionParameter = ActionParameterSelectable<"select">;
 
 export const createSlotObjects = (slots: SlotData): SelectActionParameter[] => {
@@ -28,10 +27,16 @@ export const createSlotObjects = (slots: SlotData): SelectActionParameter[] => {
         acc.push({
           type: "select",
           label: `Select a slot for ${date}`,
-          options: times.map((slot) => ({
-            label: new Date(slot.time).toLocaleTimeString(),
-            value: slot.time + date,
-          })),
+          options: [
+            {
+              label: "None",
+              value: "none",
+            },
+            ...times.map((slot) => ({
+              label: new Date(slot.time).toLocaleTimeString(),
+              value: slot.time,
+            })),
+          ],
           name: date,
         });
       }
@@ -40,3 +45,26 @@ export const createSlotObjects = (slots: SlotData): SelectActionParameter[] => {
     []
   );
 };
+
+interface ActionData {
+  account: string;
+  data: Record<string, string>;
+}
+
+export function validateActionData(actionData: ActionData) {
+  const { data } = actionData;
+
+  const isISOString = (value: string): boolean => {
+    return value !== "none" && !isNaN(Date.parse(value));
+  };
+
+  const isoStringCount = Object.values(data).filter(isISOString).length;
+
+  if (isoStringCount > 1) {
+    throw new Error("Multiple ISO date strings are not allowed.");
+  }
+  if (isoStringCount === 0) {
+    throw new Error("No slot selected");
+  }
+  return Object.values(data).filter(isISOString)[0];
+}

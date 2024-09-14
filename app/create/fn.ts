@@ -1,4 +1,8 @@
 import {
+  createTransferInstruction,
+  getAssociatedTokenAddress,
+} from "@solana/spl-token";
+import {
   clusterApiUrl,
   Connection,
   LAMPORTS_PER_SOL,
@@ -10,14 +14,14 @@ import {
 import axios from "axios";
 import * as cheerio from "cheerio";
 
+const connection = new Connection(clusterApiUrl("devnet"));
+
 export async function transaction(
   account: PublicKey,
   amount?: number,
   address?: string
 ) {
   try {
-    const connection = new Connection(clusterApiUrl("devnet"));
-
     const { blockhash, lastValidBlockHeight } =
       await connection.getLatestBlockhash();
 
@@ -45,6 +49,44 @@ export async function transaction(
   }
 }
 
+export async function transferUSDC(
+  fromAddress: PublicKey,
+  amount: number,
+  toAddress: PublicKey
+) {
+  const { blockhash, lastValidBlockHeight } =
+    await connection.getLatestBlockhash();
+
+  const mint_address = new PublicKey(
+    // "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "9jyEAn15hMY7f5iKdUTPE5ZGaxD4BfsbHggwHFYvgF61"
+  );
+
+  try {
+    const from = await getAssociatedTokenAddress(mint_address, fromAddress);
+
+    const to = await getAssociatedTokenAddress(mint_address, toAddress);
+
+    const instruction = createTransferInstruction(
+      from,
+      to,
+      fromAddress,
+      amount * 1_000_000
+    );
+
+    const tx = new Transaction({
+      feePayer: fromAddress,
+      blockhash,
+      lastValidBlockHeight,
+    }).add(instruction);
+
+    return tx;
+  } catch (Err) {
+    throw new Error(
+      "Error in transfering USDC make sure you have enough balance"
+    );
+  }
+}
 export async function getEventTypes(username: string) {
   try {
     const res = await axios.get(`https://cal.com/${username}`);
