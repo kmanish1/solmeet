@@ -71,7 +71,7 @@ export async function POST(req: Request) {
           action: {
             type: "completed",
             title: "completed the txn",
-            description: `Scan the QR Code to directly post on X. Here is your url https://solmeet.click/meet/?id=${id.id} `,
+            description: `Scan the QR Code to directly post on X. Here is your url https://solmeet.click/meet?id=${id.id} `,
             icon: qrCodeDataUrl,
             label: "completed",
           },

@@ -67,7 +67,7 @@ export async function GET(req: Request) {
             href: "/api/actions/solmeet/create",
           },
           {
-            label: "Pay ${data!.price}$ and book slot",
+            label: `Pay ${data!.price}$ and book slot`,
             href: `/meet?meetingId=${encodeURIComponent(
               data!.id
             )}&wallet=${encodeURIComponent(
