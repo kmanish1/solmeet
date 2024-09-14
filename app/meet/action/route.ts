@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     console.log(body);
 
     const actionData = body.data as unknown as MyActionData;
-    const guest = actionData.guest.split(",");
+    const guest = validateEmails(actionData.guest);
     const endTime = addSlotLength(slot!, data?.length!);
 
     const postBody = {
@@ -97,4 +97,54 @@ function addSlotLength(slot: string, slotLengthMinutes: number): string {
   slotDate.setMinutes(slotDate.getMinutes() + slotLengthMinutes);
 
   return slotDate.toISOString().slice(0, -5) + "Z";
+}
+
+function validateEmails(input: string): string[] {
+  input = input.trim();
+  if (input === "") {
+    return [];
+  }
+
+  // More comprehensive email regex
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+  // Split input by common separators
+  const potentialEmails = input.split(/[\s,;]+/).filter(Boolean);
+
+  const validEmails: string[] = [];
+  const errors: string[] = [];
+
+  potentialEmails.forEach((email, index) => {
+    // Check for maximum length (RFC 5321)
+    if (email.length > 254) {
+      errors.push(
+        `Email at position ${index + 1} exceeds maximum length: "${email}"`
+      );
+    }
+    // Check for valid email format
+    else if (!emailRegex.test(email)) {
+      errors.push(`Invalid email format at position ${index + 1}: "${email}"`);
+    }
+    // Additional checks for common mistakes
+    else if (
+      email.includes("..") ||
+      email.startsWith(".") ||
+      email.endsWith(".")
+    ) {
+      errors.push(
+        `Invalid email at position ${
+          index + 1
+        } (consecutive dots or starts/ends with dot): "${email}"`
+      );
+    } else {
+      validEmails.push(email);
+    }
+  });
+
+  if (errors.length > 0) {
+    throw new Error("Make sure enter a valid email address");
+  }
+
+  return validEmails;
 }

@@ -1,15 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import {
   ActionError,
-  ActionPostRequest,
-  ActionPostResponse,
-  CompletedAction,
   createActionHeaders,
-  createPostResponse,
   NextAction,
   NextActionPostRequest,
 } from "@solana/actions";
-import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
+import { clusterApiUrl, Connection } from "@solana/web3.js";
 
 const headers = createActionHeaders();
 
@@ -94,11 +89,13 @@ export async function POST(req: Request) {
                 type: "text",
                 label: "Enter your name",
                 name: "name",
+                required: true,
               },
               {
                 type: "email",
                 label: "Enter your email",
                 name: "email",
+                required: true,
               },
               {
                 type: "textarea",

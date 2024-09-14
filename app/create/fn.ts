@@ -14,7 +14,7 @@ import {
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-const connection = new Connection(clusterApiUrl("devnet"));
+const connection = new Connection(clusterApiUrl("mainnet-beta"));
 
 export async function transaction(
   account: PublicKey,
@@ -58,8 +58,8 @@ export async function transferUSDC(
     await connection.getLatestBlockhash();
 
   const mint_address = new PublicKey(
-    // "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    "9jyEAn15hMY7f5iKdUTPE5ZGaxD4BfsbHggwHFYvgF61"
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    // "9jyEAn15hMY7f5iKdUTPE5ZGaxD4BfsbHggwHFYvgF61"
   );
 
   try {
