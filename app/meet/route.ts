@@ -67,7 +67,7 @@ export async function GET(req: Request) {
             href: "/api/actions/solmeet/create",
           },
           {
-            label: "Connect your wallet",
+            label: `Pay ${data!.price}$ and book slot`,
             href: `/meet?meetingId=${encodeURIComponent(
               data!.id
             )}&wallet=${encodeURIComponent(
@@ -141,10 +141,10 @@ function NextAction(id: string): NextActionLink {
     type: "inline",
     action: {
       type: "action",
-      title: "Enter the meet details",
+      title: "Enter your details",
       description:
-        "Enter your name , email and other information to book the slot and receive the meet the link",
-      icon: "https://cal.com/_next/image?url=https%3A%2F%2Fwww.datocms-assets.com%2F77432%2F1662742532-verified.png&w=1920&q=75",
+        "Enter your name, email and other information to book the slot and receive confirmation",
+      icon: `https://i.ibb.co/q97pdk9/Screenshot-2024-09-14-152912.png`,
       label: "",
       links: {
         actions: [

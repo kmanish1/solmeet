@@ -28,7 +28,8 @@ export async function POST(req: Request) {
   const body: ActionPostRequest = await req.json();
   //@ts-ignore
   const arr = body.data.meetid.split(",");
-  const ogImageUrl = await getImage();
+  const username = new URL(req.url).searchParams.get("username")!;
+  const ogImageUrl = await getImage(username);
 
   let account: PublicKey;
   try {
@@ -37,7 +38,6 @@ export async function POST(req: Request) {
     throw new Error("Invalid account");
   }
 
-  const username = new URL(req.url).searchParams.get("username")!;
   //@ts-ignore
   let price = body.data!.price;
   const id = await prisma.solMeet.create({
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       username,
       slug: arr[3],
       meetingId: parseInt(arr[0]),
-      length:parseInt(arr[4]),
+      length: parseInt(arr[4]),
       title: arr[1],
       description: arr[2],
       address: account.toBase58(),
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   });
 
   const tx = await transaction(account);
-  const url = `https://solmeet.click/meet/?${id.id}`;
+  const url = `https://solmeet.click/meet?id=${id.id}`;
   const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
     url
   )}`;
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
           action: {
             type: "completed",
             title: "completed the txn",
-            description: `Scan the QR Code to directly post on X. Here is your url https://solmeet.click/meet/?${id.id} `,
+            description: `Scan the QR Code to directly post on X. Here is your url https://solmeet.click/meet/?id=${id.id} `,
             icon: qrCodeDataUrl,
             label: "completed",
           },
@@ -83,8 +83,8 @@ export async function POST(req: Request) {
   return Response.json(payload, { headers });
 }
 
-async function getImage() {
-  const res = await axios.get("https://cal.com/thrishank");
+async function getImage(username: string) {
+  const res = await axios.get(`https://cal.com/${username}`);
   const html = res.data;
 
   const $ = cheerio.load(html);
