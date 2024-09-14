@@ -107,7 +107,7 @@ function NextAction(arr: any, username: string): NextActionLink {
       title: "Generate Blink",
       description:
         "Select the event type in the drop down below and set the pricing in USDC",
-      icon: "https://cal.com/_next/image?url=https%3A%2F%2Fwww.datocms-assets.com%2F77432%2F1662742532-verified.png&w=1920&q=75",
+      icon: "https://cal.com/_next/image?url=https%3A%2F%2Fwww.datocms-assets.com%2F77432%2F1662742861-calendso-rebrands-to-cal-com.png&w=1200&q=75",
       label: "",
       links: {
         actions: [
