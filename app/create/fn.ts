@@ -14,7 +14,9 @@ import {
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-const connection = new Connection(clusterApiUrl("mainnet-beta"));
+const connection = new Connection(clusterApiUrl("mainnet-beta"), {
+  commitment: "confirmed",
+});
 
 export async function transaction(
   account: PublicKey,
